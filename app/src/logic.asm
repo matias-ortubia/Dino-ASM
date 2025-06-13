@@ -69,7 +69,7 @@ delay proc
     push cx
     push dx
 
-    mov cx, 10000
+    mov cx, 0
     ; Esperar en base a CX ticks (CX * ~55ms)
     ; CX debe contener la cantidad de ticks antes de llamar
     mov ah, 00h
