@@ -1,5 +1,5 @@
 -- Aca agregar descripcion para el usuario final de como jugar, instrucciones, (configuraciones?),etc
-
+(completar)
 
 -- Desarrollo del juego: como se penso, que se realizo y cual es la logica del mismo
 

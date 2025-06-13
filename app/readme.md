@@ -13,10 +13,12 @@ Consolidado:
 
 Extendido:
 
-Funciones ->
+Funciones -> (falta completar xd)
 
 ├── main.asm       # 
                    # 
+├── menu.asm       # 
+                   #                    
 ├── input.asm      # 
                    # 
 ├── draw.asm       # 
