@@ -19,6 +19,8 @@
 .code
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
     EXTRN delay:PROC            ; -> LOGIC.ASM
+    EXTRN modo_negro:PROC       ; -> LOGIC.ASM
+    EXTRN sprite:PROC           ; -> SPRITE.ASM
 
     PUBLIC imprimir_cadena
     PUBLIC dibujar_dino
@@ -124,5 +126,6 @@ fin:
     pop ax
     ret
 dibujar_dino endp
+
 
 end
