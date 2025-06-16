@@ -20,9 +20,6 @@
     score_actual     db 0
     va_a_sumar_punto db 0 ; Flag que determina si el jugador va a sumar un punto luego de que el dino salto
 
-    score_actual     db 0
-    va_a_sumar_punto db 0 ; Flag que determina si el jugador va a sumar un punto luego de que el dino salto
-
 .code
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
     EXTRN modo_negro:PROC       ; -> LOGIC.ASM
