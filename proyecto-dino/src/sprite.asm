@@ -10,6 +10,13 @@
       SPRITE_SHIP       DB 02H,00H,07H,00H,05H,00H,05H,00H,15H,40H,97H,48H,9FH
                         DB 0C8H,0BFH,0E8H,0FFH,0F8H,0EFH,0B8H,0CFH,98H,82H,08H
 
+      SPRITE_PATINETA db 0C0h, 03h, 3Fh, 0FCh, 10h, 08h, 28h, 14h, 10h, 08h ;base 2 bytes, Altura 5 pix, color 04h (rojo)
+
+      SPRITE_PAT_MOV db  0C0h, 03h, 3Fh, 0FCh, 28h, 14h, 00h, 00h, 28h, 14h ;base 2 bytes, Altura 5 pix, color 04h (rojo)
+
+      SPRITE_MONEDA db   01h,0C0h,03h,0E0h,07h,70h,06h,30h,07h,70h,03h,0E0h,01h,0C0h ; base 2 bytes, altura 7 pix, color 44h (amarillo)
+
+
       SPRITE_SENAL db  07h, 0E0h, 0Fh, 0F0h, 1Fh, 0F8h, 3Fh, 0FCh, 3Fh, 0FCh, 3Fh, 0FCh, 3Fh, 0FCh, 3Fh, 0FCh, 1Fh, 0F8h, 0Fh, 0F0h, 07h, 0E0h, 01h, 80h, 01h, 80h, 01h, 80h, 01h, 80h, 01h, 80h, 01h, 80h
 
       SPRITE_CACTUS db 01h,80h,03h,0C0h,03h,0C0h,03h,0C6h,03h,0CFh,43h,0CFh,0E3h,0CFh,0E3h,0CFh,0E3h,0CFh,0FFh,0CFh,7Fh,0CFh,03h,0FFh,03h,0FEh,03h,0FEh,03h,0F8h,03h,0C0h,03h,0C0h,03h,0C0h
