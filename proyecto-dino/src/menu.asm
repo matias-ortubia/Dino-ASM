@@ -6,19 +6,23 @@
     opciones    db 'Jugar', 0
                 db 'Ver Records', 0
                 db 'Salir', 0
-    opcion_actual db 0             ; 0=Jugar, 1=Ver Records, 2=Salir
-    fila_titulo  equ 5
-    fila_inicio  equ 10
-    col_inicio   equ 35
-    normal_attr  db 07h            ; Gris sobre negro
-    selec_attr   db 70h            ; Negro sobre gris
+    opcion_actual       db 0             ; 0=Jugar, 1=Ver Records, 2=Salir
+    fila_titulo         db 5
+    fila_inicio         db 10
+    col_inicio          db 35
+    normal_attr         db 07h            ; Gris sobre negro
+    selec_attr          db 70h            ; Negro sobre gris
+
+    col_gameOv          db 30
+    col_msjGOv          db 10
+    msg_game_over       db '*** GAME OVER ***', 0
+    msg_presiona_tecla  db 'Presiona cualquier tecla para volver al menu...', 0
 
 .code
     PUBLIC MENU
+    PUBLIC dibujar_game_over
 
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
-    EXTRN delay:PROC            ; -> LOGIC.ASM
-    EXTRN imprimir_cadena:PROC  ; -> DRAW.ASM
     
 ;-------------------------------------------------------------------------------------------------
 ;Función menu 
@@ -126,6 +130,54 @@ dibujar_menu proc
 dibujar_menu endp
 
 ;-------------------------------------------------------------------------------------------------
+;Función imprimir_cadena 
+;		Realiza: 		
+;		Recibe: 		
+;		Devuelve: 	
+;-------------------------------------------------------------------------------------------------
+imprimir_cadena proc
+        push ax
+        push bx
+        push cx
+        push dx
+        push si
+        push bp
+        push di
+        
+        mov di, si              ; DI para contar longitud
+        mov bp, si              ; BP = offset cadena (ES:BP para int 10h)
+        mov ax, ds
+        mov es, ax              ; ES = segmento de datos
+        
+        ; Contar longitud de cadena
+        xor cx, cx              ; CX = contador de longitud
+    contar:
+        mov al, [di]
+        inc di
+        cmp al, 0
+        je  imprimir
+        inc cx
+        jmp contar
+
+    imprimir:
+        jcxz salir              ; Si cadena vacía, saltar
+        mov bh, 0               ; Página 0
+        mov ax, 1301h           ; AH=13h (escribir cadena), AL=01h (modo atributo)
+        int 10h
+
+    salir:
+
+        pop di
+        pop bp
+        pop si
+        pop dx
+        pop cx
+        pop bx
+        pop ax
+        ret
+imprimir_cadena endp
+
+;-------------------------------------------------------------------------------------------------
 ;Función dibujar_records 
 ;		Realiza: 		
 ;		Recibe: 		
@@ -141,5 +193,43 @@ dibujar_records proc
         ; AGREGAR MENU PARA RECORDS
         ret
 dibujar_records endp
+
+;-------------------------------------------------------------------------------------------------
+; Función dibujar_game_over
+;       Realiza: Muestra un mensaje de "Game Over" y espera una tecla
+;       Recibe: Nada
+;       Devuelve: Nada
+;-------------------------------------------------------------------------------------------------
+
+dibujar_game_over proc
+    PUSH BX
+    PUSH DX
+    PUSH SI
+
+    ; Mostrar "Game Over"
+    mov dh, fila_titulo     ; Fila
+    add dh, 5
+    mov dl, col_gameOv      ; Columna centrada aproximadamente
+    mov si, offset msg_game_over
+    mov bl, [selec_attr]    ; Atributo resaltado
+    call imprimir_cadena
+
+    ; Mostrar instrucción para volver
+    mov dh, fila_inicio
+    add dh, 5
+    mov dl, col_msjGOv
+    mov si, offset msg_presiona_tecla
+    mov bl, [normal_attr]
+    call imprimir_cadena
+
+    ; Esperar tecla
+    mov ah, 00h
+    int 16h
+
+    POP SI
+    POP DX
+    POP BX
+    ret
+dibujar_game_over endp
 
 end

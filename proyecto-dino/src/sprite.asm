@@ -4,11 +4,13 @@
 .stack 100h
 
 .data
-        SPRITE_DINO     db 00h,3Eh,00h,7Fh,00h,6Fh,00h,7Fh,00h,78h,00h,7Eh,80h,70h,80h,0F0h,0C1h,0FCh,0E1h,0F4h,0FFh,0F0h,0FFh,0F0h,7Fh,0F0h,3Fh,0E0h,1Fh,0C0h,0Fh,80h,0Dh,80h,08h,80h,0Ch,0C0h
-        SPRITE_SHIP     DB 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh
-        Piramide        db 18h, 24h, 42h, 81h, 0ffh ;Bitmap
+      SPRITE_DINO       db 00h,3Eh,00h,7Fh,00h,6Fh,00h,7Fh,00h,78h,00h,7Eh,80h,70h,80h,0F0h,0C1h,0FCh,0E1h,0F4h,0FFh,0F0h,0FFh,0F0h,7Fh,0F0h,3Fh,0E0h,1Fh,0C0h,0Fh,80h,0Dh,80h,08h,80h,0Ch,0C0h
+      SPRITE_LINEA      DB 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh
 
-        fondob          db 00h, 20h, 00h, 00h, 00h, 02h, 80h, 00h, 00h, 00h, 00h, 00h, 00h
+      SPRITE_SHIP       DB 02H,00H,07H,00H,05H,00H,05H,00H,15H,40H,97H,48H,9FH
+                        DB 0C8H,0BFH,0E8H,0FFH,0F8H,0EFH,0B8H,0CFH,98H,82H,08H
+
+      fondob            db 00h, 20h, 00h, 00h, 00h, 02h, 80h, 00h, 00h, 00h, 00h, 00h, 00h
                         db 00h, 50h, 00h, 00h, 80h, 04h, 40h, 02h, 00h, 00h, 00h, 00h, 00h
                         db 00h, 90h, 20h, 01h, 80h, 08h, 20h, 05h, 00h, 10h, 00h, 00h, 00h
                         db 00h, 88h, 50h, 02h, 80h, 12h, 10h, 04h, 80h, 28h, 00h, 00h, 00h
@@ -24,7 +26,7 @@
                         db 48h, 20h, 0C2h, 00h, 41h, 01h, 30h, 20h, 02h, 0Eh, 4Ch, 84h, 10h
                         db 80h, 40h, 02h, 00h, 00h, 80h, 00h, 11h, 0C2h, 00h, 41h, 00h, 90h
 
-        fondom          db 00h, 20h, 00h, 00h, 00h, 03h, 80h, 00h, 00h, 00h, 00h, 00h, 00h
+      fondom            db 00h, 20h, 00h, 00h, 00h, 03h, 80h, 00h, 00h, 00h, 00h, 00h, 00h
                         db 00h, 60h, 00h, 00h, 00h, 07h, 0C0h, 02h, 00h, 00h, 00h, 00h, 00h
                         db 00h, 70h, 20h, 01h, 00h, 0Dh, 0E0h, 03h, 00h, 10h, 00h, 00h, 00h
                         db 00h, 0F0h, 30h, 01h, 80h, 1Eh, 0F0h, 07h, 00h, 30h, 00h, 00h, 00h
@@ -40,7 +42,7 @@
                         db 3Fh, 0DFh, 3Dh, 0FFh, 0BEh, 0FEh, 0CFh, 0DFh, 0FDh, 0F1h, 0B3h, 7Bh, 0E0h
                         db 7Fh, 0BFh, 0FDh, 0FFh, 0FFh, 7Fh, 0FFh, 0EEh, 3Dh, 0FFh, 0BEh, 0FFh, 60h
 
-        fondon          db 80h, 00h, 00h, 00h, 07h, 00h, 03h, 80h, 00h, 00h, 00h, 00h, 00h
+      fondon            db 80h, 00h, 00h, 00h, 07h, 00h, 03h, 80h, 00h, 00h, 00h, 00h, 00h
                         db 80h, 00h, 00h, 00h, 07h, 80h, 07h, 0C0h, 00h, 00h, 00h, 00h, 00h
                         db 0C0h, 00h, 00h, 40h, 0Fh, 80h, 07h, 0E0h, 04h, 00h, 00h, 20h, 10h
                         db 0E0h, 00h, 00h, 0E0h, 1Fh, 0C0h, 07h, 0E0h, 0Eh, 00h, 00h, 70h, 30h
@@ -57,23 +59,14 @@
                         db 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h
 		
 .code
-        EXTRN delay:PROC            ; -> LOGIC.ASM
-        EXTRN espera:PROC            ; -> ESPERA.ASM
         EXTRN DRAW_RECTANGLE:PROC   ; -> LIBSP.ASM
         EXTRN DRAW_SPRITE:PROC      ; -> LIBSP.ASM
         
-        PUBLIC SPRITE
         PUBLIC FONDOSP 
         PUBLIC DINOSP
         PUBLIC OBSTACULOSP 
 
-SPRITE PROC
 
-      CALL FONDOSP
-      CALL DINOSP
-      CALL OBSTACULOSP
-
-SPRITE ENDP
 FONDOSP proc
 ;;; MONTAÑAS
       PUSH 07H                  ;(Marron)
@@ -105,56 +98,61 @@ FONDOSP proc
 ;;; MONTAÑAS
 
 ;;; LINEA DE ABAJO
-      PUSH 04H                ;(ROJO)
-      PUSH OFFSET SPRITE_SHIP ;(OFFSET DEL SPRITE)
+      PUSH 0fH                ;(ROJO)
+      PUSH OFFSET SPRITE_LINEA ;(OFFSET DEL SPRITE)
       PUSH 0                 ;COORDENADA X
       PUSH 150               ;COORDENADA Y
 
       PUSH 40                  ;BASE EN BYTES, LA NAVE SON 2 BYTES DE LARGO.
       PUSH 1                 ;ALTURA EN PIXELES, (12 DE ALTO).
       CALL DRAW_SPRITE
+
+      RET
 ;;; LINEA DE ABAJO
 FONDOSP ENDP
 
 DINOSP PROC
 ;;; DINO
-      PUSH 3fH                ;(ROJO)
+      PUSH AX
+      PUSH BX
+      PUSH CX
+
+      PUSH AX                 ;COLOR
       PUSH OFFSET SPRITE_DINO ;(OFFSET DEL SPRITE)
-      PUSH 30                 ;COORDENADA X
-      PUSH 120                ;COORDENADA Y
+      PUSH BX                 ;COORDENADA X (30)
+      PUSH CX                 ;COORDENADA Y (120)
 
       PUSH 2                  ;BASE EN BYTES, LA NAVE SON 2 BYTES DE LARGO.
       PUSH 19                 ;ALTURA EN PIXELES, (12 DE ALTO).
       CALL DRAW_SPRITE
+      
+      POP CX
+      POP BX
+      POP AX
+      RET
 ;;; DINO
 DINOSP ENDP
 
 OBSTACULOSP PROC
-        xor bx ,bx
-        ;;; RECTANGULO
-loopRectangulo:
-      ;EN CX, COORDENADA X.
-      ;EN DX, COORDENADA Y.
-      ;EN AL, COLOR.
-      ;PUSH BASE EN PIXELES.
-      ;PUSH ALTURA EN PIXELES.
-       
-      MOV CX, 160  ;COORDENADA X
-      sub cx,bx
-      MOV DX, 130  ;COORDENADA Y
-      MOV AL, 02H ;COLOR EN AL.
-      PUSH 25     ;BASE.
-      PUSH 10     ;ALTURA.
-      CALL DRAW_RECTANGLE
-      mov ah,1
-      call espera
-      cmp bx, 100
-      je fin
-      add bx, 10
-jmp loopRectangulo
-;;; RECTANGULO
-fin:
-      ret
+;;; OBSTACULO
+      PUSH AX
+      PUSH BX
+      PUSH CX
+
+      PUSH AX                 ;COLOR
+      PUSH OFFSET SPRITE_SHIP ;(OFFSET DEL SPRITE)
+      PUSH BX                 ;COORDENADA X (160)
+      PUSH CX                 ;COORDENADA Y (120)
+
+      PUSH 2                  ;BASE EN BYTES, LA NAVE SON 2 BYTES DE LARGO.
+      PUSH 12                 ;ALTURA EN PIXELES, (12 DE ALTO).
+      CALL DRAW_SPRITE
+      
+      POP CX
+      POP BX
+      POP AX
+      RET
+;;; OBSTACULO
 OBSTACULOSP ENDP
 
 end
