@@ -66,7 +66,12 @@
         PUBLIC DINOSP
         PUBLIC OBSTACULOSP 
 
-
+;-------------------------------------------------------------------------------------------------
+;Función FONDOSP 
+;		Realiza: DIBUJA SPRITE FONDO / BACKGROUND
+;		Recibe: 	NADA, TODO HARDCODEADO
+;		Devuelve: 	   NADA
+;-------------------------------------------------------------------------------------------------
 FONDOSP proc
 ;;; MONTAÑAS
       PUSH 07H                  ;(Marron)
@@ -98,7 +103,7 @@ FONDOSP proc
 ;;; MONTAÑAS
 
 ;;; LINEA DE ABAJO
-      PUSH 0fH                ;(ROJO)
+      PUSH 0fH                ;(BLANCO)
       PUSH OFFSET SPRITE_LINEA ;(OFFSET DEL SPRITE)
       PUSH 0                 ;COORDENADA X
       PUSH 150               ;COORDENADA Y
@@ -111,6 +116,12 @@ FONDOSP proc
 ;;; LINEA DE ABAJO
 FONDOSP ENDP
 
+;-------------------------------------------------------------------------------------------------
+;Función DINOSP 
+;		Realiza: DIBUJA SPRITE DINO	
+;		Recibe: 		AL -> COLOR, BL -> COORDENADA X, CL -> COORDENADA Y
+;		Devuelve: 	   NADA
+;-------------------------------------------------------------------------------------------------
 DINOSP PROC
 ;;; DINO
       PUSH AX
@@ -133,6 +144,12 @@ DINOSP PROC
 ;;; DINO
 DINOSP ENDP
 
+;-------------------------------------------------------------------------------------------------
+;Función OBSTACULOSP 
+;		Realiza: DIBUJA SPRITE OBSTACULO	
+;		Recibe: 		AL -> COLOR, BL -> COORDENADA X, CL -> COORDENADA Y
+;		Devuelve: 	   NADA
+;-------------------------------------------------------------------------------------------------
 OBSTACULOSP PROC
 ;;; OBSTACULO
       PUSH AX
