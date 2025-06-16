@@ -5,7 +5,7 @@
     EXTRN menu:PROC                  ; -> MENU.ASM
     EXTRN dibujar_game_over:PROC     ; -> MENU.ASM
     EXTRN juego:PROC                 ; -> DINO.ASM
-    EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
+    EXTRN CREA_RECORDS:PROC          ; -> ARCHIVO.ASM
 
     PUBLIC GAME_OVER
 
@@ -22,6 +22,9 @@ main proc
     mov ah, 01h
     mov cx, 2607h
     int 10h
+
+    CALL CREA_RECORDS
+    
 menu_principal:
     call menu
 
@@ -36,8 +39,6 @@ dino:
     ;jmp menu_principal
 
 salir_programa:
-
-    call limpiar_pantalla
 
     mov ax, 4C00h
     int 21h

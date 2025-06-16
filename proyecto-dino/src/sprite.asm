@@ -158,7 +158,7 @@ DINOSP ENDP
 ;-------------------------------------------------------------------------------------------------
 ;Función OBSTACULOSP 
 ;		Realiza: DIBUJA SPRITE OBSTACULO	
-;		Recibe: 		AL -> COLOR, BL -> COORDENADA X, CL -> COORDENADA Y
+;		Recibe: 		AL -> COLOR, BL -> COORDENADA X, CL -> COORDENADA Y, SI -> OBSTACULO A IMPRIMIR
 ;		Devuelve: 	   NADA
 ;-------------------------------------------------------------------------------------------------
 OBSTACULOSP PROC
@@ -166,16 +166,30 @@ OBSTACULOSP PROC
       PUSH AX
       PUSH BX
       PUSH CX
+      PUSH DX
 
+      CMP SI, 3
+      JBE FACIL
+      CMP SI, 6
+      JBE INTERMEDIO
+      LEA DX OFFSET SPRITE_SENAL
+      JMP IMPRIME
+FACIL:
+      LEA DX OFFSET SPRITE_CACTUS
+      JMP IMPRIME
+INTEMEDIO:
+      LEA DX OFFSET SPRITE_SHIP
+IMPRIME:
       PUSH AX                 ;COLOR
-      PUSH OFFSET SPRITE_SHIP ;(OFFSET DEL SPRITE)
+      PUSH DX                 ;(OFFSET DEL SPRITE)
       PUSH BX                 ;COORDENADA X (160)
       PUSH CX                 ;COORDENADA Y (120)
 
       PUSH 2                  ;BASE EN BYTES, LA NAVE SON 2 BYTES DE LARGO.
       PUSH 12                 ;ALTURA EN PIXELES, (12 DE ALTO).
       CALL DRAW_SPRITE
-      
+FIN:
+      POP DX
       POP CX
       POP BX
       POP AX

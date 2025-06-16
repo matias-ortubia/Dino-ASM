@@ -17,12 +17,14 @@
     col_msjGOv          db 10
     msg_game_over       db '*** GAME OVER ***', 0
     msg_presiona_tecla  db 'Presiona cualquier tecla para volver al menu...', 0
+    exit        db 'Gracias por jugar!', 0
 
 .code
     PUBLIC MENU
     PUBLIC dibujar_game_over
 
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
+    EXTRN LEER_RECORDS:PROC     ; -> ARCHIVO.ASM
     
 ;-------------------------------------------------------------------------------------------------
 ;Función menu 
@@ -71,8 +73,8 @@ menu proc
         cmp bl, 1
         jne  fin
         call dibujar_records
-
     fin:
+        call limpiar_pantalla
     pop ax
     ret
 menu endp
@@ -189,8 +191,12 @@ dibujar_records proc
         call limpiar_pantalla
 
         ; AGREGAR MENU PARA RECORDS
-        call menu
+        call LEER_RECORDS
         ; AGREGAR MENU PARA RECORDS
+
+        ; Esperar tecla
+        mov ah, 00h
+        int 16h
         ret
 dibujar_records endp
 

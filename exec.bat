@@ -1,4 +1,6 @@
 @echo off
+COPY "proyecto-dino\src\intRand.asm" "C:\Tasm 1.4\Tasm\intRand.asm"
+
 COPY "proyecto-dino\src\main.asm" "C:\Tasm 1.4\Tasm\main.asm"
 COPY "proyecto-dino\src\espera.asm" "C:\Tasm 1.4\Tasm\espera.asm"
 COPY "proyecto-dino\src\logic.asm" "C:\Tasm 1.4\Tasm\logic.asm"
