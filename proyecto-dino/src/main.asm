@@ -5,6 +5,7 @@
     EXTRN menu:PROC                  ; -> MENU.ASM
     EXTRN dibujar_game_over:PROC     ; -> MENU.ASM
     EXTRN juego:PROC                 ; -> DINO.ASM
+    EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
 
     PUBLIC GAME_OVER
 
@@ -35,6 +36,9 @@ dino:
     ;jmp menu_principal
 
 salir_programa:
+
+    call limpiar_pantalla
+
     mov ax, 4C00h
     int 21h
 main endp
