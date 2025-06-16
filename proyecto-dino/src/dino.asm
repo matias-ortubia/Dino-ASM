@@ -16,6 +16,9 @@
     obstaculo_y db 120
     obstaculo_x_ori db 250
 
+    score_actual     db 0
+    va_a_sumar_punto db 0 ; Flag que determina si el jugador va a sumar un punto luego de que el dino salto
+
 .code
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
     EXTRN modo_negro:PROC       ; -> LOGIC.ASM
@@ -25,8 +28,9 @@
     EXTRN FONDOSP:PROC          ; -> SPRITE.ASM
     EXTRN DINOSP:PROC           ; -> SPRITE.ASM
     EXTRN OBSTACULOSP:PROC      ; -> SPRITE.ASM
+    EXTRN score:PROC            ; -> SCORE.ASM
 
-    EXTRN GAME_OVER:PROC      ; -> MAIN.ASM
+    EXTRN GAME_OVER:PROC        ; -> MAIN.ASM
 
     PUBLIC JUEGO
 
@@ -44,6 +48,7 @@ juego proc
     push si
     push di
 
+
     CALL LIMPIAR_PANTALLA
 
     ;----------------
@@ -56,13 +61,17 @@ inicio:
     call MODO_NEGRO ; ES COMO LIMPIAR PANTALLA PERO PARA EL MODO GRAFICO
     call FONDOSP    ; IMPRIMO EL BACKGROUND
 
-    mov bl, obstaculo_x_ori     ; SETEO EL OBSTACULO EN EL X ORIGINAL PARA CUANDO VUELVE DEL GAME OVER
+    mov bl, obstaculo_x_ori        ; SETEO EL OBSTACULO EN EL X ORIGINAL PARA CUANDO VUELVE DEL GAME OVER
     mov obstaculo_x, bl
+    mov byte ptr score_actual, 0 ; SE RESETEA EL SCORE A 0 PARA CUANDO VUELVE DEL GAME OVER 
 
 nuevo_obs:
     INT 80h ; ← AL contiene un número entre 0 y 9
     MOV SI, AL
 game_loop:
+    mov al, score_actual
+    CALL SCORE           ; SE DIBUJA EL SCORE
+
     ; IMPRIMO SPRITES!
     mov al, dino_color
     mov bl, dino_x
@@ -199,19 +208,29 @@ colision proc
     sub al, 5           ; VALIDO RANGO DE 5 PIXELES A VER SI COLISIONO
     cmp al, obstaculo_x
     jbe comparaX
-    jmp continua
+    jmp no_colisiona
+
 comparaX:
     add al, 10          ; VALIDO RANGO DE 5 PIXELES A VER SI COLISIONO
     cmp al, obstaculo_x
     jbe continua
+
 comparaY:
     mov al, dino_y
     cmp al, obstaculo_y
-    jne continua
+    jne suma_punto
 
     mov ah, 1
     call espera
     CALL GAME_OVER ; Si XY son iguales para ambos SPRITES PIERDE!
+no_colisiona:
+    cmp salto_activo, 1
+    je suma_punto
+    jmp continua
+
+suma_punto:
+    inc score_actual ; SUPERA EL OBSTACULO, SUMA 1 PUNTO
+
 continua:
     POP BX
     POP AX

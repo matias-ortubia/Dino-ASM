@@ -10,6 +10,7 @@ tasm sprite.asm
 tasm libsp.asm
 tasm archivo.asm
 tasm menu.asm
+tasm score.asm
 
 tlink /t main.obj espera.obj logic.obj dino.obj score.obj sprite.obj libsp.obj archivo.obj menu.obj
 
