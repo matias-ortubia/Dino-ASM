@@ -65,6 +65,9 @@ inicio:
     mov obstaculo_x, bl
     mov byte ptr score_actual, 0 ; SE RESETEA EL SCORE A 0 PARA CUANDO VUELVE DEL GAME OVER 
 
+nuevo_obs:
+    INT 80h ; ← AL contiene un número entre 0 y 9
+    MOV SI, AL
 game_loop:
     mov al, score_actual
     CALL SCORE           ; SE DIBUJA EL SCORE
@@ -83,7 +86,7 @@ game_loop:
 
     call colision
 
-    mov ah, 0           ; USO LA FUNCION ESPERA PARA MANEJAR EL MOVIMIENTO
+    mov ah, 1           ; USO LA FUNCION ESPERA PARA MANEJAR EL MOVIMIENTO
     call espera
 
     mov ah, 01h         ; LEE LA PULSACION DE TECLA PERO SIN ESPERAR QUE SE PRESIONE ALGO!
@@ -98,6 +101,8 @@ game_loop:
 sin_tecla:
     call manejar_salto
     call mover_obstaculo
+    cmp si, 10
+    je nuevo_obs
     
     jmp game_loop ; TERMINA CON EL 'GAME OVER'
 
@@ -181,6 +186,7 @@ mover_obstaculo proc
 resetObs:
     mov bl, obstaculo_x_ori     ; SI SE PASO DEL X DEL DINO LO RESETEO
     mov obstaculo_x, bl
+    mov si, 10
 finObs:
     POP CX
     POP BX
