@@ -23,6 +23,7 @@ tasm sprite.asm
 tasm libsp.asm
 tasm archivo.asm
 tasm menu.asm
+tasm score.asm
 
 echo.
 echo ==============================
