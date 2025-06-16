@@ -28,6 +28,7 @@
     EXTRN modo_negro:PROC       ; -> LOGIC.ASM
 
     EXTRN ESPERA:PROC           ; -> ESPERA.ASM
+    EXTRN delay:PROC            ; -> ESPERA.ASM
 
     EXTRN FONDOSP:PROC          ; -> SPRITE.ASM
     EXTRN DINOSP:PROC           ; -> SPRITE.ASM
@@ -93,8 +94,9 @@ game_loop:
 
     call colision
 
-    mov ah, 1           ; USO LA FUNCION ESPERA PARA MANEJAR EL MOVIMIENTO
+    mov ah, 0           ; USO LA FUNCION ESPERA PARA MANEJAR EL MOVIMIENTO
     call espera
+    ;call delay
 
     mov ah, 01h         ; LEE LA PULSACION DE TECLA PERO SIN ESPERAR QUE SE PRESIONE ALGO!
     int 16h

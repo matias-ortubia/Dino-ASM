@@ -1,5 +1,6 @@
 .8086
-.model tiny
+.model small
+.stack 100h
 
 .code
     EXTRN menu:PROC                  ; -> MENU.ASM
@@ -24,7 +25,7 @@ main proc
     int 10h
 
     CALL CREA_RECORDS
-    
+
 menu_principal:
     call menu
 

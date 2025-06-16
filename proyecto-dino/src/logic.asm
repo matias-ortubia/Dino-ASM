@@ -1,5 +1,6 @@
 .8086
-.model tiny
+.model small
+.stack 100h
 		
 .code
     PUBLIC limpiar_pantalla
