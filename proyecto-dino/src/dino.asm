@@ -15,6 +15,10 @@
     obstaculo_x db 250
     obstaculo_y db 120
     obstaculo_x_ori db 250
+    obstaculo_fig db 0
+
+    score_actual     db 0
+    va_a_sumar_punto db 0 ; Flag que determina si el jugador va a sumar un punto luego de que el dino salto
 
     score_actual     db 0
     va_a_sumar_punto db 0 ; Flag que determina si el jugador va a sumar un punto luego de que el dino salto
@@ -30,7 +34,9 @@
     EXTRN OBSTACULOSP:PROC      ; -> SPRITE.ASM
     EXTRN score:PROC            ; -> SCORE.ASM
 
-    EXTRN GAME_OVER:PROC        ; -> MAIN.ASM
+    EXTRN score:PROC            ; -> SCORE.ASM
+
+    EXTRN GAME_OVER:PROC      ; -> MAIN.ASM
 
     PUBLIC JUEGO
 
@@ -66,8 +72,9 @@ inicio:
     mov byte ptr score_actual, 0 ; SE RESETEA EL SCORE A 0 PARA CUANDO VUELVE DEL GAME OVER 
 
 nuevo_obs:
+    xor ax,ax
     INT 80h ; ← AL contiene un número entre 0 y 9
-    MOV SI, AL
+    mov si, ax
 game_loop:
     mov al, score_actual
     CALL SCORE           ; SE DIBUJA EL SCORE

@@ -9,41 +9,46 @@ org 100h
 start:
     jmp instalar
 
-; --- ISR que será llamada por INT 80h ---
-rand_isr proc far
-    push ax
+; --- ISR de INT 80h ---
+rand_isr:
     push cx
     push dx
-
-    mov ah, 2Ch     ; DOS: obtener hora (CH=hora, CL=min, DH=seg, DL=centesimas)
+    mov ah, 2Ch        ; Obtener hora (DL = centésimas de segundo)
     int 21h
-    mov al, dl      ; tomamos los centésimos de segundo (0-99)
-    xor ah, ah
+    xor ax, ax
+    mov al, dl         ; Usamos centésimas
     mov cl, 10
-    div cl          ; AL / 10 → resto (AH) es entre 0 y 9
-    mov al, ah      ; devolver ese en AL
+    div cl             ; AL = 0–9
     xor ah, ah
-
     pop dx
     pop cx
-    pop ax
     iret
-rand_isr endp
+
+; --- Variables y mensaje ---
+oldOffset dw 0
+oldSegment dw 0
 
 msg db "INT 80h instalada correctamente!", 13, 10, "$"
 end_res label byte
 
+; --- Instalación de la INT 80h ---
 instalar:
     mov ax, cs
     mov ds, ax
     mov es, ax
 
-    ; Instalar nuestra ISR
+    ; Guardar INT 80h anterior (por buena práctica)
+    mov ax, 3580h
+    int 21h
+    mov oldOffset, bx
+    mov oldSegment, es
+
+    ; Instalar nuestra rutina
     mov dx, offset rand_isr
     mov ax, 2580h
     int 21h
 
-    ; Mostrar mensaje
+    ; Mostrar cartel
     mov dx, offset msg
     mov ah, 09h
     int 21h
