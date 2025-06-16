@@ -156,28 +156,37 @@ DINOSP ENDP
 OBSTACULOSP PROC
 ;;; OBSTACULO
       PUSH DX
+      push di
 
       CMP SI, 3
       JBE FACIL
       CMP SI, 6
       JBE INTERMEDIO
       LEA DX, SPRITE_SHIP
+      mov di,12
+      ;mov al,66h
       JMP IMPRIME
 FACIL:
       LEA DX, SPRITE_CACTUS
+      mov di,17
+      ;mov al,02h
       JMP IMPRIME
 INTERMEDIO:
       LEA DX, SPRITE_SENAL
+      mov di,17
+      ;mov al,85h
 IMPRIME:
+      xor ah,ah
       PUSH AX                 ;COLOR
       PUSH DX                 ;(OFFSET DEL SPRITE)
       PUSH BX                 ;COORDENADA X (160)
       PUSH CX                 ;COORDENADA Y (120)
 
       PUSH 2                  ;BASE EN BYTES, LA NAVE SON 2 BYTES DE LARGO.
-      PUSH 12                 ;ALTURA EN PIXELES, (12 DE ALTO).
+      PUSH di                 ;ALTURA EN PIXELES, (12 DE ALTO).
       CALL DRAW_SPRITE
 FIN:
+      pop di
       POP DX
       RET
 ;;; OBSTACULO
