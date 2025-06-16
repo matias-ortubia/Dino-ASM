@@ -30,6 +30,12 @@
 
     PUBLIC JUEGO
 
+;-------------------------------------------------------------------------------------------------
+;Función juego 
+;		Realiza: 	UNIFICA TODA LA LOGICA DEL JUEGO
+;		Recibe: 	NADA
+;		Devuelve: 	NADA
+;-------------------------------------------------------------------------------------------------
 juego proc
     push ax
     push bx
@@ -47,12 +53,14 @@ juego proc
     int 10h
 
 inicio:
-    call MODO_NEGRO
-    call FONDOSP
-    mov bl, obstaculo_x_ori
+    call MODO_NEGRO ; ES COMO LIMPIAR PANTALLA PERO PARA EL MODO GRAFICO
+    call FONDOSP    ; IMPRIMO EL BACKGROUND
+
+    mov bl, obstaculo_x_ori     ; SETEO EL OBSTACULO EN EL X ORIGINAL PARA CUANDO VUELVE DEL GAME OVER
     mov obstaculo_x, bl
 
 game_loop:
+    ; IMPRIMO SPRITES!
     mov al, dino_color
     mov bl, dino_x
     mov cl, dino_y
@@ -62,17 +70,18 @@ game_loop:
     mov bl, obstaculo_x
     mov cl, obstaculo_y
     call OBSTACULOSP
+    ; IMPRIMO SPRITES!
 
     call colision
 
-    mov ah, 0
+    mov ah, 0           ; USO LA FUNCION ESPERA PARA MANEJAR EL MOVIMIENTO
     call espera
 
-    mov ah, 01h
+    mov ah, 01h         ; LEE LA PULSACION DE TECLA PERO SIN ESPERAR QUE SE PRESIONE ALGO!
     int 16h
     jz sin_tecla
 
-    mov ah, 00h
+    mov ah, 00h         ; OBTENGO EL ESTADO BUFFER DEL TECLADO A VER SI HAY UNA 'W'
     int 16h
     cmp al, 'w'
     je salto
@@ -81,10 +90,10 @@ sin_tecla:
     call manejar_salto
     call mover_obstaculo
     
-    jmp game_loop
+    jmp game_loop ; TERMINA CON EL 'GAME OVER'
 
 salto:
-    mov salto_activo, 1
+    mov salto_activo, 1 ; CUANDO SE PRESIONE LA 'W' LO MARCO PARA QUE SALTE
     jmp sin_tecla
 
 finJuego:
@@ -97,32 +106,38 @@ finJuego:
     ret
 juego endp
 
+;-------------------------------------------------------------------------------------------------
+;Función manejar_salto 
+;		Realiza: 	TIENE LA LOGICA DEL SALTO DEL DINO	
+;		Recibe: 	NADA
+;		Devuelve: 	NADA
+;-------------------------------------------------------------------------------------------------
 manejar_salto proc
     PUSH AX
     PUSH BX
     PUSH CX
 
     mov ah, 0
-    call borro_sprite
+    call borro_sprite       ; BORRO EL SPRITE ANTERIOR PARA IMPRIMIR UNO NUEVO
 
-    cmp salto_activo, 0
+    cmp salto_activo, 0     ; CHEQUEO EL FLAG DE SALTO, ESTE SE ACTIVA SI PRESIONO LA 'W'
     je sin_salto
 
     MOV bl, dino_y_salto
     MOV dino_y, bl
 
-    mov al, ticks_salto
-    cmp al, 10
+    mov al, ticks_salto     ; MANTENGO AL DINO ARRIBA POR X TICKS DE ESPERA
+    cmp al, 10              ; SETEO 10 TICKS PARA MANTENERLO ARRIBA
     je fin_salto
     inc al
     mov ticks_salto, al
     jmp fin
 fin_salto:
-    call FONDOSP
-    mov ticks_salto, 0    
-    mov salto_activo, 0
+    call FONDOSP            ; VUELVO A IMPRIMIR EL FONDO PORQUE EL DINO LO PISA
+    mov ticks_salto, 0      ; RESETEO TICKS
+    mov salto_activo, 0     ; RESETEO SALTO PARA ESPERAR LA 'W'
 sin_salto:
-    MOV bl, dino_y_ori
+    MOV bl, dino_y_ori      ; PONGO AL DINO EN SU POSICION Y ORIGINAL
     MOV dino_y, bl
 fin:
     POP CX
@@ -131,6 +146,12 @@ fin:
     ret
 manejar_salto endp
 
+;-------------------------------------------------------------------------------------------------
+;Función mover_obstaculo 
+;		Realiza: 	MUEVE UN OBSTACULO X PIXELES HARDCODEADOS, MANEJA LA VELOCIDAD
+;		Recibe: 		NADA
+;		Devuelve: 	    NADA
+;-------------------------------------------------------------------------------------------------
 mover_obstaculo proc
     PUSH AX
     PUSH BX
@@ -140,16 +161,16 @@ mover_obstaculo proc
     call borro_sprite
     
     mov al, dino_x
-    sub al, 20
+    sub al, 20          ; SI SE PASO POR 20 PIXELES VUELVE AL PRINCIPIO
     cmp obstaculo_x, al
     jbe resetObs
 
     mov bl, obstaculo_x
-    sub bl, 5
+    sub bl, 5           ; VELOCIDAD DE MOVIMIENTO DEL OBSTACULO
     mov obstaculo_x, bl
     jmp finObs
 resetObs:
-    mov bl, obstaculo_x_ori
+    mov bl, obstaculo_x_ori     ; SI SE PASO DEL X DEL DINO LO RESETEO
     mov obstaculo_x, bl
 finObs:
     POP CX
@@ -158,17 +179,23 @@ finObs:
     ret
 mover_obstaculo endp
 
+;-------------------------------------------------------------------------------------------------
+;Función COLISION 
+;		Realiza: VERIFICA LA COLISION DE EL OBSTACULO Y EL DINO USANDO EL XY DE LOS MISMOS
+;		Recibe: 	NADA	
+;		Devuelve: 	NADA
+;-------------------------------------------------------------------------------------------------
 colision proc
     PUSH AX
     PUSH BX
 
     mov al, dino_x
-    sub al, 5
+    sub al, 5           ; VALIDO RANGO DE 5 PIXELES A VER SI COLISIONO
     cmp al, obstaculo_x
     jbe comparaX
     jmp continua
 comparaX:
-    add al, 10
+    add al, 10          ; VALIDO RANGO DE 5 PIXELES A VER SI COLISIONO
     cmp al, obstaculo_x
     jbe continua
 comparaY:
@@ -178,20 +205,27 @@ comparaY:
 
     mov ah, 1
     call espera
-    CALL GAME_OVER ; Si XY son iguales para ambas figuras PIERDE!
+    CALL GAME_OVER ; Si XY son iguales para ambos SPRITES PIERDE!
 continua:
     POP BX
     POP AX
     RET
 colision endp
 
+;-------------------------------------------------------------------------------------------------
+;Función borro_sprite 
+;		Realiza: 	PRINTEA EN NEGRO EL SPRITE VIEJO PARA IMPRIMIR EL NUEVO
+;		Recibe: 	EN AH 1 PARA OBSTACULO, 0 PARA DINO	
+;		Devuelve: 	NADA
+;-------------------------------------------------------------------------------------------------
 borro_sprite PROC
+    ; PRINTEO EL SPRITE EN NEGRO PARA 'BORRARLO'
     PUSH AX
     PUSH BX
     PUSH CX
 
     mov al, 00H             ;(NEGRO)
-    cmp ah, 1
+    cmp ah, 1               ; SI VIENE 1 EN AH BORRO EL OBSTACULO, SI VIENE 0 EL DINO
     je obs
 
     mov bl, dino_x
