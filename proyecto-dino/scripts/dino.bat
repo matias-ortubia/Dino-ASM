@@ -1,3 +1,6 @@
+tasm intRand.asm
+tlink /t intRand.obj
+
 tasm main.asm
 tasm espera.asm
 tasm logic.asm
@@ -8,6 +11,7 @@ tasm libsp.asm
 tasm archivo.asm
 tasm menu.asm
 
-tlink main.obj espera.obj logic.obj dino.obj score.obj sprite.obj libsp.obj archivo.obj menu.obj
+tlink /t main.obj espera.obj logic.obj dino.obj score.obj sprite.obj libsp.obj archivo.obj menu.obj
 
+intRand.com
 main.exe

@@ -4,7 +4,7 @@
 
 .DATA
     nombreArchivo DB "records.txt", 00H
-    mensaje       DB "XXX 000", 0dh, 0ah,24h
+    mensaje       DB "XXX 000", 0dh, 0ah ,24h
     handle        DW ?
     filehandler db 00h,00h
     readchar db 20h
@@ -58,7 +58,6 @@ fin_escritura:
     MOV BX, handle
     INT 21h
 
-    CALL LEER_RECORDS
     JMP FIN
 ERROR:
     ; Manejo de error simple: terminar
@@ -76,7 +75,7 @@ CREA_RECORDS ENDP
 ; RECIBE POR STACK [BP+4] EL OFFSET DE LA VARIABLE A ESCRIBIR EN EL ARCHIVO
 ESCRIBIR_RECORDS PROC 
     PUSH BP
-    MOV BP, SI
+    MOV BP, SP
     PUSH AX
     PUSH BX
     PUSH CX
@@ -84,7 +83,7 @@ ESCRIBIR_RECORDS PROC
 
     MOV AH, 40h            ; Función DOS: Escribir archivo
     MOV BX, handle         ; Handle del archivo
-    LEA DX, SS:[BP+4]      ; Dirección del mensaje
+    MOV DX, SS:[BP+4]      ; Dirección del mensaje
     MOV CX, 9              ; Cantidad de bytes a escribir (ajustar según el mensaje real)
     INT 21h
 
@@ -104,7 +103,7 @@ LEER_RECORDS PROC
     RET
 LEER_RECORDS ENDP
  
-proc leeTXT
+leeTXT proc 
   push ax
   push bx
   push cx
