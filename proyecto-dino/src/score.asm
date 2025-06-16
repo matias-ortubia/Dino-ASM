@@ -110,6 +110,10 @@ SCORE endp
 ;		Devuelve: Nada
 ;-------------------------------------------------------------------------------------------------------------------------------------------------
 mostrarscore proc
+	push ax
+	push bx
+	push cx
+
 	mov cursor, ax ; Guardo el parámetro del cursor
 	
 	; Se muestra el dígito más significativo del score
@@ -134,6 +138,9 @@ digitomenor:
 								; o sea, lo corro 7 columnas a la derecha
 	call muestrodigito ; se muestra el otro dígito
 	
+	pop cx
+	pop bx
+	pop ax
 	ret
 mostrarscore endp
 ;-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -142,6 +149,11 @@ mostrarscore endp
 ;		Devuelve: Nada
 ;-------------------------------------------------------------------------------------------------------------------------------------------------
 muestrodigito proc
+	push ax
+	push bx
+	push cx
+	push dx 
+
 	mov ax, cursor
 	mov punterocursor, ax ; Guardo el parámetro del cursor
 	
@@ -223,6 +235,11 @@ imprimolineanumero:
 	mov punteronumero, dx
 	loop imprimolineanumero ; loopeo hasta imprimir las cinco líneas de cada número
 
+	pop dx
+	pop cx
+	pop bx
+	pop ax
+
 	ret
 muestrodigito endp
 
@@ -245,6 +262,11 @@ BORRARSCORE endp
 ;		Devuelve: 	Nada
 ;------------------------------------------------------------------------------------------------------------------------------------------------------------------BORRARDIGITO proc
 BORRARDIGITO proc
+	push ax
+	push bx
+	push cx
+	push dx
+
 	mov cx, 05h ; variable del LOOP para las 5 líneas de caracteres por número
 	xor bx, bx
 borrolineanumero:
@@ -259,6 +281,11 @@ borrolineanumero:
 	int 21H	
 
 	loop borrolineanumero ; loopeo hasta imprimir las cinco líneas de cada número
+
+	pop dx
+	pop cx
+	pop bx
+	pop ax
 
 	ret
 BORRARDIGITO endp
