@@ -135,10 +135,6 @@ FONDOSP ENDP
 ;-------------------------------------------------------------------------------------------------
 DINOSP PROC
 ;;; DINO
-      PUSH AX
-      PUSH BX
-      PUSH CX
-
       PUSH AX                 ;COLOR
       PUSH OFFSET SPRITE_DINO ;(OFFSET DEL SPRITE)
       PUSH BX                 ;COORDENADA X (30)
@@ -147,10 +143,6 @@ DINOSP PROC
       PUSH 2                  ;BASE EN BYTES, LA NAVE SON 2 BYTES DE LARGO.
       PUSH 19                 ;ALTURA EN PIXELES, (12 DE ALTO).
       CALL DRAW_SPRITE
-      
-      POP CX
-      POP BX
-      POP AX
       RET
 ;;; DINO
 DINOSP ENDP
@@ -163,16 +155,13 @@ DINOSP ENDP
 ;-------------------------------------------------------------------------------------------------
 OBSTACULOSP PROC
 ;;; OBSTACULO
-      PUSH AX
-      PUSH BX
-      PUSH CX
       PUSH DX
 
       CMP SI, 3
       JBE FACIL
       CMP SI, 6
       JBE INTERMEDIO
-      LEA DX, SPRITE_SENAL
+      LEA DX, SPRITE_SHIP
       JMP IMPRIME
 FACIL:
       LEA DX, SPRITE_CACTUS
@@ -190,9 +179,6 @@ IMPRIME:
       CALL DRAW_SPRITE
 FIN:
       POP DX
-      POP CX
-      POP BX
-      POP AX
       RET
 ;;; OBSTACULO
 OBSTACULOSP ENDP

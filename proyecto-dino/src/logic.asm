@@ -5,6 +5,7 @@
 .code
     PUBLIC limpiar_pantalla
     PUBLIC delay
+    PUBLIC delay_new
     PUBLIC modo_negro
 
 ;-------------------------------------------------------------------------------------------------
@@ -81,16 +82,23 @@ delay proc
     cmp dx, bx
     jb .loop_delay
 
-    mov cx, 0FFFFh ; me dejo de andar el de arriba :(
-delay_loop:
-    nop
-    loop delay_loop
-
     pop dx
     pop cx
     pop bx
     pop ax
     ret
 delay endp
+
+delay_new proc
+    push cx
+
+    mov cx, 0FFFFh ; me dejo de andar el de arriba :(
+delay_loop:
+    nop
+    loop delay_loop
+
+    pop cx
+    ret
+delay_new endp
 
 end
