@@ -92,8 +92,12 @@ nuevo_obs:
     mov moneda_colision, 1
 game_loop:
     mov al, score_actual
-    CMP AL, 250
-    JAE finJuego
+    cmp al, 250 ; SI LLEGAS A 250 GANAS!
+    jae finJuego 
+    cmp al, 230 ; SI ES 230 YA PUEDE ROMPER EL SCORE
+    jbe monedaValida
+    call resetMoneda
+monedaValida:
     CALL SCORE           ; SE DIBUJA EL SCORE
 
     ; IMPRIMO SPRITES!
@@ -148,6 +152,7 @@ salto:
     jmp sin_tecla
 
 finJuego:
+    CALL LIMPIAR_PANTALLA
     CALL GAME_WIN
 
     pop di
@@ -298,20 +303,21 @@ no_colisiona:
 suma_punto:
     inc score_actual ; SUPERA EL OBSTACULO, SUMA 1 PUNTO
 
-continua:
+continua:                   ; LOGICA COLISION MONEDA
     mov al, moneda_x
     cmp al, dino_x
     jne finColision
     mov al, moneda_y
     cmp al, dino_y
     jne finColision
-    mov cx, 15
+    mov cx, 15    ; CUANTOS PUNTOS DA AGARRAR LA MONEDA
 choqueMoneda:
     inc score_actual
 loop choqueMoneda
     mov ah, 2               ; BORRO MONEDA
     call borro_sprite
     CALL resetMoneda        ; RESETEO MONEDA
+                            ; FIN LOGICA COLISION MONEDA
 finColision:
     POP CX
     POP BX

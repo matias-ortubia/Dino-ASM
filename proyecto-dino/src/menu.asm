@@ -23,16 +23,16 @@
     exit                db 'Gracias por jugar!',0Dh, 0Ah,'Dino robado, digo, basado en Dinosaurio de Chrome',0Dh, 0Ah,'Presiona W para saltar',0Dh, 0Ah,'Sistema de Procesamiento de Datos',0Dh, 0Ah,'1er Cuatri | 2025',0Dh, 0Ah,'Nicolas Marinkovic, Santiago Litvin, Matias Ortubia, Juan Martin Ricci Pierani', 0
 
 .code
-    EXTRN delay_new:PROC        ; -> ESPERA.ASM
-    PUBLIC MENU
-    PUBLIC dibujar_game_over
-    PUBLIC dibujar_ganaste
-    PUBLIC dibujar_creditos
-
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
     EXTRN delay_new:PROC        ; -> LOGIC.ASM
     EXTRN modo_texto:PROC       ; -> LOGIC.ASM
     ;EXTRN LEER_RECORDS:PROC     ; -> ARCHIVO.ASM
+    EXTRN score:PROC            ; -> SCORE.ASM
+
+    PUBLIC MENU
+    PUBLIC dibujar_game_over
+    PUBLIC dibujar_ganaste
+    PUBLIC dibujar_creditos
     
 ;-------------------------------------------------------------------------------------------------
 ;Función menu 
