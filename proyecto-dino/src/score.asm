@@ -2,14 +2,12 @@
 .model small
 .stack 100h
 .data
-	JUG EQU 0218h ; JUGX es la fila-columna de la posición superior izquierda del primero de los dos nros  de score del jugador X
-	;JUG EQU 022Ah
+	JUG EQU 0210h ; JUG es la fila-columna de la posición superior izquierda del primer numero de score
 	
 	DISTCIFRAS EQU 07h
 	DELAYBORRADO EQU 03h
 
 	scorejugador db 00h ; SCOREJUGADOR es el valor de score que se quiere mostrar en pantalla
-	;scorejugador2 db 00h
 	
 	cursor					dw 00h, 00h ; CURSOR se utiliza para posicionar el cursor en la impresión del dígito del score
 	punteronumero dw 00h, 00h ; PUNTERONUMERO es la variable cuyo valor es el offset del número a mostrar
@@ -83,9 +81,10 @@
  extrn ESPERA:proc
 
 ;------------------------------------------------------------------------------------------------------------------------------------------------------------------
-; Función SCORE - Muestra los scores de los dos jugadores en pantalla, espera un tiempo parametrizable y los borra
-;		Recibe: 		AH socre del jugador 1 en hexa
-;							AL socre del jugador 2 en hexa
+; Función SCORE - Muestra el score del jugador en pantalla
+;		Recibe: 
+; 	    AL = el score del jugador en hexa		
+;							
 ;		Devuelve: 	Nada
 ;------------------------------------------------------------------------------------------------------------------------------------------------------------------
 SCORE proc
@@ -107,41 +106,67 @@ SCORE endp
 ; Función MOSTRARSCORE - 	Muestra el score de un jugador. El marcador es de dos dígitos. Si el score a
 ;												mostrar es menor a 10 muestra un solo dígito de la forma X, no dos de la forma 0X
 ;		Recibe: AX = fila-columna superior izquierdo del marcador
+; 	 			BL = el score del jugador en hexa
 ;		Devuelve: Nada
 ;-------------------------------------------------------------------------------------------------------------------------------------------------
 mostrarscore proc
+	push ax
+	push bx
+	push cx
+
 	mov cursor, ax ; Guardo el parámetro del cursor
 	
 	; Se muestra el dígito más significativo del score
-	cmp bl, 09h
-	jle digitomenor ; El score es menor o igual a 9 es de un solo dígito. No muestro dos dígitos
+	cmp bl, 0Ah
+	jb primer_digito ; El score es menor o igual a 9 es de un solo dígito. No muestro dos dígitos
+	cmp bl, 64h
+	jb segundo_digito ; Si es menor a 100 (y mayor a 9) dibuja la segunda cifra
+tercer_digito:
+	xor ax, ax 
+	mov al, bl ; Muevo el score a al (con ah en 0) para poder dividir
+	mov cl, 64h
+	div cl     ; Divido por 100
+	mov bl, al ; Paso la centena a bl 
+	call muestrodigito 	; Llamo al mostrador de dígitos en pantalla teniendo en cuenta que el cursos está posicionado en el
+									; borde superior izquierdo de su presentación
 	
-	xor ax, ax
-	mov al, bl
+	mov bl, ah ; Muevo el resto a bl para continuar con la decena
+	add cursor, DISTCIFRAS ; Muevo el cursor
+segundo_digito:
+	xor ax, ax   ; resetea ax
+	mov al, bl   ; mueve el num a ax
 	mov cl, 0Ah ; Como es mayor a nueve, lo divido por 10 y tomo el resto
 	div cl
 	mov bl, al ; El cociente lo paso como parámetro BL ya que es el dígito más significativo
 
-	push ax ; Guardo el AX porque tengo el cociente de la división que me servirá para mostrar después
 	call muestrodigito 	; Llamo al mostrador de dígitos en pantalla teniendo en cuenta que el cursos está posicionado en el
 									; borde superior izquierdo de su presentación
-	pop ax ; Restauro el AX para tratar el otro dígito
 	
 	mov bl, ah ; Paso ahora el resto al parámetro BL que es el dígito menos significativo
-	
-digitomenor:
+primer_digito:
 	add cursor, DISTCIFRAS 	; Agrego 7 al cursor para que apunte al borde superior izquierdo del dígito menos significativo, 
 								; o sea, lo corro 7 columnas a la derecha
 	call muestrodigito ; se muestra el otro dígito
 	
+	pop cx
+	pop bx
+	pop ax
 	ret
 mostrarscore endp
+
+
 ;-------------------------------------------------------------------------------------------------------------------------------------------------
 ; Función MUESTRODIGITO - Muestra un dígito del score en pantalla en función de la variable cursor
 ;		Recibe: AX = fila-columna superior izquierdo del digito del marcador
+; 				BL = el dígito a dibujar
 ;		Devuelve: Nada
 ;-------------------------------------------------------------------------------------------------------------------------------------------------
 muestrodigito proc
+	push ax
+	push bx
+	push cx
+	push dx 
+
 	mov ax, cursor
 	mov punterocursor, ax ; Guardo el parámetro del cursor
 	
@@ -149,65 +174,61 @@ muestrodigito proc
 	mov ah, 01h
 	int 10h ; cursor invisible
 
-	cmp bl, 00h ; tipeó "1"
-	jne noescero ; No es el cero, sigo
-	mov punteronumero, offset cero1 ; Es el cero, cargo la variable punteronumero con el offset de los ASCIIs del uno
-	jmp seguir
-
-noescero:
+	cmp bl, 00h
+	je es_cero
 	cmp bl, 01h
-	jne noesuno
+	je es_uno
+	cmp bl, 02h
+	je es_dos
+	cmp bl, 03h
+	je es_tres
+	cmp bl, 04h
+	je es_cuatro
+	cmp bl, 05h
+	je es_cinco
+	cmp bl, 06h
+	je es_seis
+	cmp bl, 07h
+	je es_siete
+	cmp bl, 08h
+	je es_ocho
+	cmp bl, 09h
+	je es_nueve
+
+	; Se carga la variable punteronumero con el offset de los ASCIIs del numero
+es_cero:
+	mov punteronumero, offset cero1
+	jmp seguir
+es_uno:
 	mov punteronumero, offset uno1
 	jmp seguir
-
-noesuno:
-	cmp bl, 02h
-	jne noesdos
+es_dos:
 	mov punteronumero, offset dos1
 	jmp seguir
-	
-noesdos:
-	cmp bl, 03h
-	jne noestres
+es_tres:
 	mov punteronumero, offset tres1
 	jmp seguir
-	
-noestres:
-	cmp bl, 04h
-	jne noescuatro
+es_cuatro:
 	mov punteronumero, offset cuatro1
 	jmp seguir
-	
-noescuatro:
-	cmp bl, 05
-	jne noescinco
+es_cinco:
 	mov punteronumero, offset cinco1
 	jmp seguir
-
-noescinco:
-	cmp bl, 06h
-	jne noesseis
+es_seis:
 	mov punteronumero, offset seis1
 	jmp seguir
-	
-noesseis:
-	cmp bl, 07h
-	jne noessiete
+es_siete:
 	mov punteronumero, offset siete1
 	jmp seguir
-
-noessiete:
-	cmp bl, 08h
-	jne noesocho
+es_ocho:
 	mov punteronumero, offset ocho1
 	jmp seguir
-
-noesocho: ; es nuevie
+es_nueve:
 	mov punteronumero, offset nueve1
-
 seguir:
 	mov cx, 05h ; variable del LOOP para las 5 líneas de caracteres por número
 	xor bx, bx
+
 imprimolineanumero:
 	mov dx, punterocursor ; traigo a DX el lugar del cursor
 	mov ah, 02h
@@ -222,6 +243,11 @@ imprimolineanumero:
 	add dx, 06h ; al agregar 6 salto a la segunda línea de caracteres del número. Cada número tiene 5 caracteres ascii más es pesos son 6
 	mov punteronumero, dx
 	loop imprimolineanumero ; loopeo hasta imprimir las cinco líneas de cada número
+
+	pop dx
+	pop cx
+	pop bx
+	pop ax
 
 	ret
 muestrodigito endp
@@ -245,6 +271,11 @@ BORRARSCORE endp
 ;		Devuelve: 	Nada
 ;------------------------------------------------------------------------------------------------------------------------------------------------------------------BORRARDIGITO proc
 BORRARDIGITO proc
+	push ax
+	push bx
+	push cx
+	push dx
+
 	mov cx, 05h ; variable del LOOP para las 5 líneas de caracteres por número
 	xor bx, bx
 borrolineanumero:
@@ -259,6 +290,11 @@ borrolineanumero:
 	int 21H	
 
 	loop borrolineanumero ; loopeo hasta imprimir las cinco líneas de cada número
+
+	pop dx
+	pop cx
+	pop bx
+	pop ax
 
 	ret
 BORRARDIGITO endp
