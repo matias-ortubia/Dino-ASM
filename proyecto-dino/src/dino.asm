@@ -30,8 +30,7 @@
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
     EXTRN modo_negro:PROC       ; -> LOGIC.ASM
 
-    EXTRN ESPERA:PROC           ; -> ESPERA.ASM
-    EXTRN delay:PROC            ; -> LOGIC.ASM
+    ;EXTRN ESPERA:PROC           ; -> ESPERA.ASM
     EXTRN delay_new:PROC        ; -> LOGIC.ASM
 
     EXTRN FONDOSP:PROC          ; -> SPRITE.ASM
@@ -60,7 +59,6 @@ juego proc
     push dx
     push si
     push di
-
 
     CALL LIMPIAR_PANTALLA
 
@@ -120,12 +118,10 @@ IMPRIME_NEW:
 
     call colision
 
-    ;mov ah, 0           ; USO LA FUNCION ESPERA PARA MANEJAR EL MOVIMIENTO
-    ;call espera
     mov al, score_actual
-    mov dl, al           ; AUMENTA LA VELOCIDAD EXPONENCIALMENTE
+    mov dl, al          ; AUMENTA LA VELOCIDAD EXPONENCIALMENTE
     mul dl
-    call delay_new
+    call delay_new      ; USO LA FUNCION ESPERA PARA MANEJAR EL MOVIMIENTO
 
     mov ah, 01h         ; LEE LA PULSACION DE TECLA PERO SIN ESPERAR QUE SE PRESIONE ALGO!
     int 16h
@@ -259,10 +255,10 @@ comparaY:
     mov al, dino_y
     cmp al, obstaculo_y
     jne suma_punto
-
-    mov ah, 1
-    call espera
-    CALL GAME_OVER ; Si XY son iguales para ambos SPRITES PIERDE!
+    
+    CALL delay_new
+    CALL delay_new
+    CALL GAME_OVER    ; Si XY son iguales para ambos SPRITES PIERDE!
 no_colisiona:
     cmp salto_activo, 1
     je suma_punto

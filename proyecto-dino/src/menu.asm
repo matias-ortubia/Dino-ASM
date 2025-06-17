@@ -32,7 +32,7 @@
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
     EXTRN delay_new:PROC        ; -> LOGIC.ASM
     EXTRN modo_texto:PROC       ; -> LOGIC.ASM
-    EXTRN LEER_RECORDS:PROC     ; -> ARCHIVO.ASM
+    ;EXTRN LEER_RECORDS:PROC     ; -> ARCHIVO.ASM
     
 ;-------------------------------------------------------------------------------------------------
 ;Función menu 
@@ -187,27 +187,27 @@ imprimir_cadena proc
         ret
 imprimir_cadena endp
 
-;-------------------------------------------------------------------------------------------------
-;Función dibujar_records 
-;		Realiza: 		
-;		Recibe: 		
-;		Devuelve: 	
-;-------------------------------------------------------------------------------------------------
+; ;-------------------------------------------------------------------------------------------------
+; ;Función dibujar_records 
+; ;		Realiza: 		
+; ;		Recibe: 		
+; ;		Devuelve: 	
+; ;-------------------------------------------------------------------------------------------------
 
-dibujar_records proc
-        CALL modo_texto
+; dibujar_records proc
+;         CALL modo_texto
         
-        call limpiar_pantalla
+;         call limpiar_pantalla
 
-        ; AGREGAR MENU PARA RECORDS
-        call LEER_RECORDS
-        ; AGREGAR MENU PARA RECORDS
+;         ; AGREGAR MENU PARA RECORDS
+;         call LEER_RECORDS
+;         ; AGREGAR MENU PARA RECORDS
 
-        ; Esperar tecla
-        mov ah, 00h
-        int 16h
-        ret
-dibujar_records endp
+;         ; Esperar tecla
+;         mov ah, 00h
+;         int 16h
+;         ret
+; dibujar_records endp
 
 ;-------------------------------------------------------------------------------------------------
 ; Función dibujar_game_over

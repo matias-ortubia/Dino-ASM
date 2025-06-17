@@ -7,7 +7,7 @@
     EXTRN dibujar_game_over:PROC     ; -> MENU.ASM
     EXTRN dibujar_ganaste:PROC     ; -> MENU.ASM
     EXTRN juego:PROC                 ; -> DINO.ASM
-    EXTRN CREA_RECORDS:PROC          ; -> ARCHIVO.ASM
+    ;EXTRN CREA_RECORDS:PROC          ; -> ARCHIVO.ASM
     EXTRN modo_texto:PROC            ; -> LOGIC.ASM
 
     PUBLIC GAME_OVER
@@ -20,7 +20,8 @@ main proc
 
     CALL modo_texto ; SETEO PANTALLA EN MODO VIDEO - TEXTO y OCULTO CURSOR
 
-    CALL CREA_RECORDS ; CREO ARCHIVO PARA GUARDAR RECORDS
+    ;CALL CREA_RECORDS ; CREO ARCHIVO PARA GUARDAR RECORDS
+    ;QEPD
 
 menu_principal:
     call menu

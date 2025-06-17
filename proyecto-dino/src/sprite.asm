@@ -232,10 +232,10 @@ PATINETASP ENDP
 ;-------------------------------------------------------------------------------------------------
 MONEDASP PROC
 ;;; MONEDA
-      PUSH 44h                 ;COLOR
+      PUSH 44h                  ;COLOR
       PUSH OFFSET SPRITE_MONEDA ;(OFFSET DEL SPRITE)
-      PUSH BX                 ;COORDENADA X (30)
-      PUSH CX                 ;COORDENADA Y (120)
+      PUSH BX                   ;COORDENADA X (30)
+      PUSH CX                   ;COORDENADA Y (120)
 
       PUSH 2                  ;BASE EN BYTES, LA NAVE SON 2 BYTES DE LARGO.
       PUSH 7                  ;ALTURA EN PIXELES, (12 DE ALTO).
