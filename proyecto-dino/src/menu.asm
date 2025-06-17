@@ -4,7 +4,7 @@
 .data
     titulo      db 'Dino', 0
     opciones    db 'Jugar', 0
-                db 'Ver Records', 0
+                db 'Ver Creditos', 0
                 db 'Salir', 0
     opcion_actual       db 0             ; 0=Jugar, 1=Ver Records, 2=Salir
     fila_titulo         db 5
@@ -80,7 +80,7 @@ menu proc
         mov bl, opcion_actual
         cmp bl, 1
         jne  fin
-        call dibujar_records
+        call dibujar_creditos
     fin:
         call limpiar_pantalla
     pop ax
