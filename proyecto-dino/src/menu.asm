@@ -17,6 +17,8 @@
     col_msjGOv          db 10
     msg_game_over       db '*** GAME OVER ***', 0
     msg_game_over2      db '/|\ GAME OVER /|\', 0
+    msg_ganaste         db '◝⁠(⁠⁰⁠▿⁠⁰⁠)⁠◜Felicidades, ganaste!◝⁠(⁠⁰⁠▿⁠⁰⁠)⁠◜', 0
+    msg_ganaste2        db '<⁠(⁠￣⁠︶⁠￣⁠)⁠>Felicidades, ganaste!<⁠(⁠￣⁠︶⁠￣⁠)⁠>', 0
     msg_presiona_tecla  db 'Presiona cualquier tecla para volver al menu...', 0
     exit        db 'Gracias por jugar!', 0
 
@@ -24,6 +26,7 @@
     EXTRN delay_new:PROC        ; -> ESPERA.ASM
     PUBLIC MENU
     PUBLIC dibujar_game_over
+    PUBLIC dibujar_ganaste
 
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
     EXTRN delay_new:PROC        ; -> LOGIC.ASM
@@ -271,5 +274,69 @@ pres_tecla:
     POP BX
     ret
 dibujar_game_over endp
+
+dibujar_ganaste proc
+
+    PUSH BX
+    PUSH DX
+    PUSH SI
+    
+    ; mov fila_titulo, 120
+    mov col_gameOv, 60
+muevo_win:
+    cmp col_gameOv, 29
+    je pres_tecla
+
+    call limpiar_pantalla
+    ; Mostrar "Game Over"
+    mov dh, fila_titulo     ; Fila
+    add dh, 5
+    mov dl, col_gameOv      ; Columna centrada aproximadamente
+    mov si, offset msg_ganaste
+    mov bl, 06h   ; Atributo resaltado
+    call imprimir_cadena
+    dec col_gameOv
+    call delay_new
+    call delay_new
+    call delay_new
+jmp muevo_win2
+
+muevo_win2:
+    cmp col_gameOv, 29
+    je pres_tecla_w
+
+    call limpiar_pantalla
+    ; Mostrar "Felicitaciones, ganaste!"
+    mov dh, fila_titulo     ; Fila
+    add dh, 5
+    mov dl, col_gameOv      ; Columna centrada aproximadamente
+    mov si, offset msg_ganaste2
+    mov bl, 06h   ; Atributo resaltado
+    call imprimir_cadena
+    dec col_gameOv
+    call delay_new
+    call delay_new
+    call delay_new
+jmp muevo_win
+
+pres_tecla_w:
+    ; Mostrar instrucción para volver
+    mov dh, fila_inicio
+    add dh, 5
+    mov dl, col_msjGOv
+    mov si, offset msg_presiona_tecla
+    mov bl, [normal_attr]
+    call imprimir_cadena
+
+    ; Esperar tecla
+    mov ah, 00h
+    int 16h
+
+    POP SI
+    POP DX
+    POP BX
+    ret
+
+dibujar_ganaste endp
 
 end
