@@ -20,13 +20,14 @@
     msg_ganaste         db '◝⁠(⁠⁰⁠▿⁠⁰⁠)⁠◜Felicidades, ganaste!◝⁠(⁠⁰⁠▿⁠⁰⁠)⁠◜', 0
     msg_ganaste2        db '<⁠(⁠￣⁠︶⁠￣⁠)⁠>Felicidades, ganaste!<⁠(⁠￣⁠︶⁠￣⁠)⁠>', 0
     msg_presiona_tecla  db 'Presiona cualquier tecla para volver al menu...', 0
-    exit        db 'Gracias por jugar!', 0
+    exit                db 'Gracias por jugar!',0Dh, 0Ah,'Dino robado, digo, basado en Dinosaurio de Chrome',0Dh, 0Ah,'Presiona W para saltar',0Dh, 0Ah,'Sistema de Procesamiento de Datos',0Dh, 0Ah,'1er Cuatri | 2025',0Dh, 0Ah,'Nicolas Marinkovic, Santiago Litvin, Matias Ortubia, Juan Martin Ricci Pierani', 0
 
 .code
     EXTRN delay_new:PROC        ; -> ESPERA.ASM
     PUBLIC MENU
     PUBLIC dibujar_game_over
     PUBLIC dibujar_ganaste
+    PUBLIC dibujar_creditos
 
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
     EXTRN delay_new:PROC        ; -> LOGIC.ASM
@@ -338,5 +339,54 @@ pres_tecla_w:
     ret
 
 dibujar_ganaste endp
+
+dibujar_creditos proc
+
+    PUSH BX
+    PUSH DX
+    PUSH SI
+    
+    mov fila_titulo, 30
+    ;mov col_gameOv, 60
+muevo_creditos:
+    cmp fila_titulo, 1
+    je pres_tecla_c
+
+    call limpiar_pantalla
+    ; Mostrar "Game Over"
+    mov dh, fila_titulo     ; Fila
+    add dh, 5
+    mov dl, col_gameOv      ; Columna centrada aproximadamente
+    mov si, offset exit
+    mov bl, 02h   ; Atributo resaltado
+    call imprimir_cadena
+    dec fila_titulo
+    call delay_new
+    call delay_new
+    call delay_new
+    call delay_new
+    call delay_new
+    call delay_new
+jmp muevo_creditos
+
+pres_tecla_c:
+    ; Mostrar instrucción para volver
+    mov dh, fila_inicio
+    add dh, 5
+    mov dl, col_msjGOv
+    mov si, offset msg_presiona_tecla
+    mov bl, [normal_attr]
+    call imprimir_cadena
+
+    ; Esperar tecla
+    mov ah, 00h
+    int 16h
+
+    POP SI
+    POP DX
+    POP BX
+    ret
+
+dibujar_creditos endp
 
 end
