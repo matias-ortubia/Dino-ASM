@@ -20,11 +20,17 @@
     obstaculo_x_ori db 255
     obstaculo_fig db 0
 
-    score_actual     db 0
+    moneda_x db 255
+    moneda_y db 100
+    moneda_x_ori db 255
 
-    senal_color db 85h
-    ship_color db 66h  ;(VERDE)
-    cactus_color db 02h
+    score_actual     db 0
+    moneda_colision  db 0
+
+    senal_color db 85h  ;(VIOLETA)
+    ship_color db 66h   ;(CELESTE)
+    cactus_color db 02h ;(VERDE)
+    moneda_color db 44h ;(AMARILLO)
 
 .code
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
@@ -72,6 +78,7 @@ inicio:
     call MODO_NEGRO ; ES COMO LIMPIAR PANTALLA PERO PARA EL MODO GRAFICO
     call FONDOSP    ; IMPRIMO EL BACKGROUND
 
+    CALL resetMoneda
     mov bl, obstaculo_x_ori        ; SETEO EL OBSTACULO EN EL X ORIGINAL PARA CUANDO VUELVE DEL GAME OVER
     mov obstaculo_x, bl
     mov byte ptr score_actual, 0 ; SE RESETEA EL SCORE A 0 PARA CUANDO VUELVE DEL GAME OVER 
@@ -80,6 +87,9 @@ nuevo_obs:
     xor ax,ax
     INT 80h ; ← AL contiene un número entre 0 y 9
     mov si, ax
+    cmp si, 9
+    jne game_loop
+    mov moneda_colision, 1
 game_loop:
     mov al, score_actual
     CMP AL, 250
@@ -97,25 +107,15 @@ imprime_pat:
     mov al, dino_color
     call dibujar_dino
 
-    CMP SI, 2
-    JBE CACTUS_NEW
-    CMP SI, 4
-    JBE SENAL_NEW
-    CMP SI, 6
-    JBE CACTUS_NEW
-    CMP SI, 8
-    JBE SENAL_NEW
-    mov al, ship_color
-    JMP IMPRIME_NEW
-CACTUS_NEW:
-    mov al, cactus_color
-    JMP IMPRIME_NEW
-SENAL_NEW:
-    mov al, senal_color
-IMPRIME_NEW:
+    call obstaculo_color_leer
     call dibujar_obs
+    
+    cmp moneda_colision, 0
+    je noImprimeMoneda
+    mov al, moneda_color
+    call dibujar_moneda
     ; IMPRIMO SPRITES!
-
+noImprimeMoneda:
     call colision
 
     mov al, score_actual
@@ -135,9 +135,12 @@ IMPRIME_NEW:
 sin_tecla:
     call manejar_salto
     call mover_obstaculo
+    cmp moneda_colision, 0
+    je noMuevoMoneda
+    call mover_moneda
+noMuevoMoneda:
     cmp si, 10
     je nuevo_obs
-    
     jmp game_loop ; TERMINA CON EL 'GAME OVER'
 
 salto:
@@ -230,6 +233,32 @@ finObs:
     ret
 mover_obstaculo endp
 
+mover_moneda proc
+    PUSH AX
+    PUSH BX
+    PUSH CX
+
+    mov ah, 2
+    call borro_sprite
+
+    mov al, dino_x
+    sub al, 20          ; SI SE PASO POR 20 PIXELES VUELVE AL PRINCIPIO
+    cmp moneda_x, al
+    jbe resetMon
+
+    mov bl, moneda_x
+    sub bl, 1           ; VELOCIDAD DE MOVIMIENTO DEL OBSTACULO
+    mov moneda_x, bl
+    jmp finMovMoneda
+resetMon:
+    CALL resetMoneda
+finMovMoneda:
+    POP CX
+    POP BX
+    POP AX
+    ret
+mover_moneda endp
+
 ;-------------------------------------------------------------------------------------------------
 ;Función COLISION 
 ;		Realiza: VERIFICA LA COLISION DE EL OBSTACULO Y EL DINO USANDO EL XY DE LOS MISMOS
@@ -239,6 +268,7 @@ mover_obstaculo endp
 colision proc
     PUSH AX
     PUSH BX
+    PUSH CX
 
     mov al, dino_x
     sub al, 5           ; VALIDO RANGO DE 5 PIXELES A VER SI COLISIONO
@@ -258,9 +288,10 @@ comparaY:
     
     CALL delay_new
     CALL delay_new
+    CALL LIMPIAR_PANTALLA 
     CALL GAME_OVER    ; Si XY son iguales para ambos SPRITES PIERDE!
 no_colisiona:
-    cmp salto_activo, 1
+    cmp salto_activo, 0
     je suma_punto
     jmp continua
 
@@ -268,6 +299,21 @@ suma_punto:
     inc score_actual ; SUPERA EL OBSTACULO, SUMA 1 PUNTO
 
 continua:
+    mov al, moneda_x
+    cmp al, dino_x
+    jne finColision
+    mov al, moneda_y
+    cmp al, dino_y
+    jne finColision
+    mov cx, 15
+choqueMoneda:
+    inc score_actual
+loop choqueMoneda
+    mov ah, 2               ; BORRO MONEDA
+    call borro_sprite
+    CALL resetMoneda        ; RESETEO MONEDA
+finColision:
+    POP CX
     POP BX
     POP AX
     RET
@@ -288,11 +334,15 @@ borro_sprite PROC
     mov al, 00H             ;(NEGRO)
     cmp ah, 1               ; SI VIENE 1 EN AH BORRO EL OBSTACULO, SI VIENE 0 EL DINO
     je obs
-
+    cmp ah, 2               ; SI VIENE 1 EN AH BORRO EL OBSTACULO, SI VIENE 0 EL DINO
+    je mon
     call dibujar_dino       ; DIBUJO EL DINO PERO EN NEGRO (LO BORRO)
     jmp finSp
 obs:
     call dibujar_obs        ; DIBUJO EL OBS PERO EN NEGRO (LO BORRO)
+    jmp finSp
+mon:
+    call dibujar_moneda     ; DIBUJO EL MONEDA PERO EN NEGRO (LO BORRO)
 finSp:
     POP CX
     POP BX
@@ -329,4 +379,40 @@ dibujar_obs proc
     call OBSTACULOSP
     ret
 dibujar_obs endp
+
+dibujar_moneda proc
+    mov bl, moneda_x
+    mov cl, moneda_y
+    call MONEDASP
+    ret
+dibujar_moneda endp
+
+obstaculo_color_leer proc
+    CMP SI, 2
+    JBE esCactus
+    CMP SI, 4
+    JBE esSenal
+    CMP SI, 6
+    JBE esCactus
+    CMP SI, 8
+    JBE esSenal
+    mov al, ship_color
+    JMP finLecturaColorObstaculo
+esCactus:
+    mov al, cactus_color
+    JMP finLecturaColorObstaculo
+esSenal:
+    mov al, senal_color
+finLecturaColorObstaculo:
+    ret
+obstaculo_color_leer endp
+
+resetMoneda proc
+    PUSH BX
+    mov bl, moneda_x_ori        ; SETEO LA MONEDA EN EL X ORIGINAL PARA CUANDO VUELVE DEL GAME OVER
+    mov moneda_x, bl
+    mov moneda_colision, 0
+    POP BX
+    RET
+resetMoneda endp
 end

@@ -93,8 +93,8 @@ FONDOSP proc
 dibujar_montanas:
       PUSH 07H                  ;(Marron)
       PUSH OFFSET fondob        ;(OFFSET DEL SPRITE)
-      PUSH DI                  ;COORDENADA X
-      PUSH 80                   ;COORDENADA Y
+      PUSH DI                   ;COORDENADA X
+      PUSH 70                   ;COORDENADA Y
 
       PUSH 13               ;BASE EN BYTES, LA NAVE SON 2 BYTES DE LARGO.
       PUSH 30                 ;ALTURA EN PIXELES, (12 DE ALTO).
@@ -232,7 +232,7 @@ PATINETASP ENDP
 ;-------------------------------------------------------------------------------------------------
 MONEDASP PROC
 ;;; MONEDA
-      PUSH 44h                  ;COLOR
+      PUSH AX                  ;COLOR
       PUSH OFFSET SPRITE_MONEDA ;(OFFSET DEL SPRITE)
       PUSH BX                   ;COORDENADA X (30)
       PUSH CX                   ;COORDENADA Y (120)
