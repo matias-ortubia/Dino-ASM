@@ -4,6 +4,7 @@
 
 .DATA
     nombreArchivo DB "records.txt", 00H
+    puntajesArc   DB "JP | PUN", 0dh, 0ah
     mensaje       DB "XXX 000", 0dh, 0ah ,24h
     handle        DW ?
     filehandler db 00h,00h

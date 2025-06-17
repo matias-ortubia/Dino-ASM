@@ -11,6 +11,9 @@
     dino_y_salto db 100
     dino_y_ori   db 120
 
+    pati_color   db 04H       ;(ROJO)
+    pati_y_ori   db 18
+
     obstaculo_color db 02h  ;(VERDE)
     obstaculo_x db 250
     obstaculo_y db 120
@@ -25,17 +28,18 @@
     EXTRN modo_negro:PROC       ; -> LOGIC.ASM
 
     EXTRN ESPERA:PROC           ; -> ESPERA.ASM
-    EXTRN delay:PROC            ; -> ESPERA.ASM
-    EXTRN delay_new:PROC        ; -> ESPERA.ASM
+    EXTRN delay:PROC            ; -> LOGIC.ASM
+    EXTRN delay_new:PROC        ; -> LOGIC.ASM
 
     EXTRN FONDOSP:PROC          ; -> SPRITE.ASM
     EXTRN DINOSP:PROC           ; -> SPRITE.ASM
     EXTRN OBSTACULOSP:PROC      ; -> SPRITE.ASM
-    EXTRN score:PROC            ; -> SCORE.ASM
+    EXTRN PATINETASP:PROC      ; -> SPRITE.ASM
+    EXTRN MONEDASP:PROC      ; -> SPRITE.ASM
 
     EXTRN score:PROC            ; -> SCORE.ASM
 
-    EXTRN GAME_OVER:PROC      ; -> MAIN.ASM
+    EXTRN GAME_OVER:PROC        ; -> MAIN.ASM
 
     PUBLIC JUEGO
 
@@ -83,6 +87,19 @@ game_loop:
     mov bl, dino_x
     mov cl, dino_y
     call DINOSP
+
+    cmp di, 0
+    je mover_pat
+    mov di, 0
+    jmp imprime_pat
+mover_pat:
+    mov di, 1
+imprime_pat:
+    mov al, pati_color
+    mov bl, dino_x
+    mov cl, dino_y
+    add cl, pati_y_ori
+    call PATINETASP
 
     mov al, obstaculo_color
     mov bl, obstaculo_x
@@ -263,6 +280,10 @@ borro_sprite PROC
     mov bl, dino_x
     mov cl, dino_y
     call DINOSP
+    mov bl, dino_x
+    mov cl, dino_y
+    add cl, pati_y_ori
+    call PATINETASP
     jmp finSp
 obs:
     mov bl, obstaculo_x

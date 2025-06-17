@@ -26,8 +26,10 @@
     PUBLIC dibujar_game_over
 
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
-    EXTRN LEER_RECORDS:PROC     ; -> ARCHIVO.ASM
     EXTRN delay_new:PROC        ; -> LOGIC.ASM
+    EXTRN modo_texto:PROC        ; -> LOGIC.ASM
+    EXTRN LEER_RECORDS:PROC     ; -> ARCHIVO.ASM
+    
 ;-------------------------------------------------------------------------------------------------
 ;Función menu 
 ;		Realiza: 		
@@ -189,6 +191,7 @@ imprimir_cadena endp
 ;-------------------------------------------------------------------------------------------------
 
 dibujar_records proc
+        CALL modo_texto
         
         call limpiar_pantalla
 

@@ -7,6 +7,7 @@
     PUBLIC delay
     PUBLIC delay_new
     PUBLIC modo_negro
+    PUBLIC modo_texto
 
 ;-------------------------------------------------------------------------------------------------
 ;Función limpiar_pantalla 
@@ -100,5 +101,24 @@ delay_loop:
     pop cx
     ret
 delay_new endp
+
+
+modo_texto proc
+    push ax
+    push cx
+
+    ; Configurar modo video (80x25 texto) 16 COL
+    mov ax, 0003h
+    int 10h
+
+    ; Ocultar cursor
+    mov ah, 01h
+    mov cx, 2607h
+    int 10h
+
+    pop cx
+    pop ax
+    ret
+modo_texto endp
 
 end

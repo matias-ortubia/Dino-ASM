@@ -75,7 +75,9 @@
         
         PUBLIC FONDOSP 
         PUBLIC DINOSP
-        PUBLIC OBSTACULOSP 
+        PUBLIC OBSTACULOSP
+        PUBLIC PATINETASP
+        PUBLIC MONEDASP 
 
 ;-------------------------------------------------------------------------------------------------
 ;Función FONDOSP 
@@ -191,5 +193,56 @@ FIN:
       RET
 ;;; OBSTACULO
 OBSTACULOSP ENDP
+
+;-------------------------------------------------------------------------------------------------
+;Función PATINETASP 
+;		Realiza: DIBUJA SPRITE PATINETA	
+;		Recibe: 		BL -> COORDENADA X, CL -> COORDENADA Y
+;		Devuelve: 	   NADA
+;-------------------------------------------------------------------------------------------------
+PATINETASP PROC
+;;; PATINETA
+      PUSH DX
+      
+      cmp di, 1
+      je movimiento_pat
+      lea dx, SPRITE_PATINETA
+      jmp imprime_patineta
+movimiento_pat:
+      lea dx, SPRITE_PAT_MOV
+imprime_patineta:
+      PUSH AX                 ;COLOR
+      PUSH DX                 ;(OFFSET DEL SPRITE)
+      PUSH BX                 ;COORDENADA X (30)
+      PUSH CX                 ;COORDENADA Y (120)
+
+      PUSH 2                  ;BASE EN BYTES, LA NAVE SON 2 BYTES DE LARGO.
+      PUSH 5                  ;ALTURA EN PIXELES, (12 DE ALTO).
+      CALL DRAW_SPRITE
+
+      POP DX
+      RET
+;;; PATINETA
+PATINETASP ENDP
+
+;-------------------------------------------------------------------------------------------------
+;Función MONEDASP 
+;		Realiza: DIBUJA SPRITE MONEDA	
+;		Recibe: 		BL -> COORDENADA X, CL -> COORDENADA Y
+;		Devuelve: 	   NADA
+;-------------------------------------------------------------------------------------------------
+MONEDASP PROC
+;;; MONEDA
+      PUSH 44h                 ;COLOR
+      PUSH OFFSET SPRITE_MONEDA ;(OFFSET DEL SPRITE)
+      PUSH BX                 ;COORDENADA X (30)
+      PUSH CX                 ;COORDENADA Y (120)
+
+      PUSH 2                  ;BASE EN BYTES, LA NAVE SON 2 BYTES DE LARGO.
+      PUSH 7                  ;ALTURA EN PIXELES, (12 DE ALTO).
+      CALL DRAW_SPRITE
+      RET
+;;; MONEDA
+MONEDASP ENDP
 
 end
