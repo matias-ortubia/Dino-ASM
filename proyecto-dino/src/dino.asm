@@ -21,7 +21,6 @@
     obstaculo_fig db 0
 
     score_actual     db 0
-    va_a_sumar_punto db 0 ; Flag que determina si el jugador va a sumar un punto luego de que el dino salto
 
 .code
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
@@ -111,6 +110,9 @@ imprime_pat:
 
     ;mov ah, 0           ; USO LA FUNCION ESPERA PARA MANEJAR EL MOVIMIENTO
     ;call espera
+    mov al, score_actual
+    mov dl, al           ; AUMENTA LA VELOCIDAD EXPONENCIALMENTE
+    mul dl
     call delay_new
 
     mov ah, 01h         ; LEE LA PULSACION DE TECLA PERO SIN ESPERAR QUE SE PRESIONE ALGO!
