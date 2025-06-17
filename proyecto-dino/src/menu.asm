@@ -16,16 +16,18 @@
     col_gameOv          db 30
     col_msjGOv          db 10
     msg_game_over       db '*** GAME OVER ***', 0
+    msg_game_over2      db '/|\ GAME OVER /|\', 0
     msg_presiona_tecla  db 'Presiona cualquier tecla para volver al menu...', 0
     exit        db 'Gracias por jugar!', 0
 
 .code
+    EXTRN delay_new:PROC        ; -> ESPERA.ASM
     PUBLIC MENU
     PUBLIC dibujar_game_over
 
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
     EXTRN LEER_RECORDS:PROC     ; -> ARCHIVO.ASM
-    
+    EXTRN delay_new:PROC        ; -> LOGIC.ASM
 ;-------------------------------------------------------------------------------------------------
 ;Función menu 
 ;		Realiza: 		
@@ -211,15 +213,44 @@ dibujar_game_over proc
     PUSH BX
     PUSH DX
     PUSH SI
+    
+    ; mov fila_titulo, 120
+    mov col_gameOv, 60
+muevo_go:
+    cmp col_gameOv, 29
+    je pres_tecla
 
+    call limpiar_pantalla
     ; Mostrar "Game Over"
     mov dh, fila_titulo     ; Fila
     add dh, 5
     mov dl, col_gameOv      ; Columna centrada aproximadamente
     mov si, offset msg_game_over
-    mov bl, [selec_attr]    ; Atributo resaltado
+    mov bl, 06h   ; Atributo resaltado
     call imprimir_cadena
+    dec col_gameOv
+    call delay_new
+    call delay_new
+jmp muevo_go2
 
+muevo_go2:
+    cmp col_gameOv, 29
+    je pres_tecla
+
+    call limpiar_pantalla
+    ; Mostrar "Game Over"
+    mov dh, fila_titulo     ; Fila
+    add dh, 5
+    mov dl, col_gameOv      ; Columna centrada aproximadamente
+    mov si, offset msg_game_over2
+    mov bl, 06h   ; Atributo resaltado
+    call imprimir_cadena
+    dec col_gameOv
+    call delay_new
+    call delay_new
+jmp muevo_go
+
+pres_tecla:
     ; Mostrar instrucción para volver
     mov dh, fila_inicio
     add dh, 5
