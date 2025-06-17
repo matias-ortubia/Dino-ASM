@@ -15,12 +15,16 @@
     pati_y_ori   db 18
 
     obstaculo_color db 02h  ;(VERDE)
-    obstaculo_x db 250
+    obstaculo_x db 255
     obstaculo_y db 120
-    obstaculo_x_ori db 250
+    obstaculo_x_ori db 255
     obstaculo_fig db 0
 
     score_actual     db 0
+
+    senal_color db 85h
+    ship_color db 66h  ;(VERDE)
+    cactus_color db 02h
 
 .code
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
@@ -33,12 +37,13 @@
     EXTRN FONDOSP:PROC          ; -> SPRITE.ASM
     EXTRN DINOSP:PROC           ; -> SPRITE.ASM
     EXTRN OBSTACULOSP:PROC      ; -> SPRITE.ASM
-    EXTRN PATINETASP:PROC      ; -> SPRITE.ASM
-    EXTRN MONEDASP:PROC      ; -> SPRITE.ASM
+    EXTRN PATINETASP:PROC       ; -> SPRITE.ASM
+    EXTRN MONEDASP:PROC         ; -> SPRITE.ASM
 
     EXTRN score:PROC            ; -> SCORE.ASM
 
     EXTRN GAME_OVER:PROC        ; -> MAIN.ASM
+    EXTRN GAME_WIN:PROC         ; -> MAIN.ASM
 
     PUBLIC JUEGO
 
@@ -79,14 +84,11 @@ nuevo_obs:
     mov si, ax
 game_loop:
     mov al, score_actual
+    CMP AL, 250
+    JAE finJuego
     CALL SCORE           ; SE DIBUJA EL SCORE
 
     ; IMPRIMO SPRITES!
-    mov al, dino_color
-    mov bl, dino_x
-    mov cl, dino_y
-    call DINOSP
-
     cmp di, 0
     je mover_pat
     mov di, 0
@@ -94,16 +96,26 @@ game_loop:
 mover_pat:
     mov di, 1
 imprime_pat:
-    mov al, pati_color
-    mov bl, dino_x
-    mov cl, dino_y
-    add cl, pati_y_ori
-    call PATINETASP
+    mov al, dino_color
+    call dibujar_dino
 
-    mov al, obstaculo_color
-    mov bl, obstaculo_x
-    mov cl, obstaculo_y
-    call OBSTACULOSP
+    CMP SI, 2
+    JBE CACTUS_NEW
+    CMP SI, 4
+    JBE SENAL_NEW
+    CMP SI, 6
+    JBE CACTUS_NEW
+    CMP SI, 8
+    JBE SENAL_NEW
+    mov al, ship_color
+    JMP IMPRIME_NEW
+CACTUS_NEW:
+    mov al, cactus_color
+    JMP IMPRIME_NEW
+SENAL_NEW:
+    mov al, senal_color
+IMPRIME_NEW:
+    call dibujar_obs
     ; IMPRIMO SPRITES!
 
     call colision
@@ -137,6 +149,8 @@ salto:
     jmp sin_tecla
 
 finJuego:
+    CALL GAME_WIN
+
     pop di
     pop si
     pop dx
@@ -203,7 +217,7 @@ mover_obstaculo proc
     mov al, dino_x
     sub al, 20          ; SI SE PASO POR 20 PIXELES VUELVE AL PRINCIPIO
     cmp obstaculo_x, al
-    jbe resetObs
+    jb resetObs
 
     mov bl, obstaculo_x
     sub bl, 5           ; VELOCIDAD DE MOVIMIENTO DEL OBSTACULO
@@ -279,18 +293,10 @@ borro_sprite PROC
     cmp ah, 1               ; SI VIENE 1 EN AH BORRO EL OBSTACULO, SI VIENE 0 EL DINO
     je obs
 
-    mov bl, dino_x
-    mov cl, dino_y
-    call DINOSP
-    mov bl, dino_x
-    mov cl, dino_y
-    add cl, pati_y_ori
-    call PATINETASP
+    call dibujar_dino       ; DIBUJO EL DINO PERO EN NEGRO (LO BORRO)
     jmp finSp
 obs:
-    mov bl, obstaculo_x
-    mov cl, obstaculo_y
-    call OBSTACULOSP
+    call dibujar_obs        ; DIBUJO EL OBS PERO EN NEGRO (LO BORRO)
 finSp:
     POP CX
     POP BX
@@ -298,4 +304,33 @@ finSp:
     ret
 borro_sprite endp
 
+;-------------------------------------------------------------------------------------------------
+;Función dibujar 
+;		Realiza: 	DIBUJAR LAS FIGURAS
+;		Recibe: 	AL -> COLOR, BL -> POS X, CL -> POS Y
+;		Devuelve: 	NADA
+;-------------------------------------------------------------------------------------------------
+
+dibujar_dino proc
+    mov bl, dino_x
+    mov cl, dino_y
+    call DINOSP
+
+    cmp al, 00H
+    je negroPat
+    mov al, pati_color
+negroPat:
+    mov bl, dino_x
+    mov cl, dino_y
+    add cl, pati_y_ori
+    call PATINETASP
+    ret
+dibujar_dino endp
+
+dibujar_obs proc
+    mov bl, obstaculo_x
+    mov cl, obstaculo_y
+    call OBSTACULOSP
+    ret
+dibujar_obs endp
 end

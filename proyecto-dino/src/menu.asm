@@ -17,8 +17,8 @@
     col_msjGOv          db 10
     msg_game_over       db '*** GAME OVER ***', 0
     msg_game_over2      db '/|\ GAME OVER /|\', 0
-    msg_ganaste         db '◝⁠(⁠⁰⁠▿⁠⁰⁠)⁠◜Felicidades, ganaste!◝⁠(⁠⁰⁠▿⁠⁰⁠)⁠◜', 0
-    msg_ganaste2        db '<⁠(⁠￣⁠︶⁠￣⁠)⁠>Felicidades, ganaste!<⁠(⁠￣⁠︶⁠￣⁠)⁠>', 0
+    msg_ganaste         db '(^-^)Felicidades, ganaste!(^-^)', 0
+    msg_ganaste2        db '(*-*)Felicidades, ganaste!(*-*)', 0
     msg_presiona_tecla  db 'Presiona cualquier tecla para volver al menu...', 0
     exit        db 'Gracias por jugar!', 0
 
@@ -30,7 +30,7 @@
 
     EXTRN limpiar_pantalla:PROC ; -> LOGIC.ASM
     EXTRN delay_new:PROC        ; -> LOGIC.ASM
-    EXTRN modo_texto:PROC        ; -> LOGIC.ASM
+    EXTRN modo_texto:PROC       ; -> LOGIC.ASM
     EXTRN LEER_RECORDS:PROC     ; -> ARCHIVO.ASM
     
 ;-------------------------------------------------------------------------------------------------
@@ -299,6 +299,9 @@ muevo_win:
     call delay_new
     call delay_new
     call delay_new
+    call delay_new
+    call delay_new
+    call delay_new
 jmp muevo_win2
 
 muevo_win2:
@@ -314,6 +317,9 @@ muevo_win2:
     mov bl, 06h   ; Atributo resaltado
     call imprimir_cadena
     dec col_gameOv
+    call delay_new
+    call delay_new
+    call delay_new
     call delay_new
     call delay_new
     call delay_new
